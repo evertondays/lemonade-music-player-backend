@@ -19,12 +19,12 @@ routes.get('/music/:id', (request, response) => {
 		if (error) {
 			throw error;
 		}
-		
+
 		return response.json(value)
 	});
 });
 
-routes.get('/music/all', (request, response) => {
+routes.get('/all', (request, response) => {
 	db.all("SELECT * FROM songs", (error, value) => {
 		if (error) {
 			throw error;
@@ -33,6 +33,7 @@ routes.get('/music/all', (request, response) => {
 		return response.json(value)
 	});
 });
+
 
 routes.post('/music', multer(multerConfig).single('file'), (request, response) => {
 	let query = `INSERT INTO songs ('name', 'artist', 'album', 'image', 'file')
