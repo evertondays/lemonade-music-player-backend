@@ -7,6 +7,7 @@ const multerConfig = require('./config/multer');
 const fs = require('fs');
 const path = require('path');
 const { promisify } = require('util');
+const mp3Duration = require('mp3-duration');
 
 // Banco de dados
 const sqlite3 = require('sqlite3');
@@ -34,10 +35,17 @@ routes.get('/all', (request, response) => {
 	});
 });
 
+routes.post('/music', multer(multerConfig).single('file'), async (request, response) => {
+	// Pegando duração da musica 
+	let fileDuration = 0;
+	fileDuration = await mp3Duration(`./uploads/${request.file.filename}`, function (err, duration) {
+		if (err) return console.log(err.message);
 
-routes.post('/music', multer(multerConfig).single('file'), (request, response) => {
-	let query = `INSERT INTO songs ('name', 'artist', 'album', 'image', 'file')
-	VALUES ('${request.body.name}', '${request.body.artist}', '${request.body.album}', '${request.body.image}','${request.file.filename}')`;
+		return duration;
+	  });
+
+	let query = `INSERT INTO songs ('name', 'artist', 'album', 'duration', 'image', 'file')
+	VALUES ('${request.body.name}', '${request.body.artist}', '${request.body.album}', '${fileDuration}', '${request.body.image}','${request.file.filename}')`;
 
 	db.run(query);
 
