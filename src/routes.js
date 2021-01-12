@@ -67,6 +67,7 @@ routes.delete('/music/:id', (request, response) => {
 	});
 
 	db.run(`DELETE FROM songs WHERE id = ${id}`);
+	db.run(`DELETE FROM playlist_song WHERE song_id = ${id}`);
 
 	return response.json({ message: 'Musica deletada' })
 });
@@ -86,7 +87,6 @@ routes.get('/playlist/:id', (request, response, next) => {
 		return response.json(value)
 	});
 });
-
 
 // Criar playlist
 routes.post('/playlist/create', (request, response) => {
