@@ -79,12 +79,27 @@ routes.get('/playlist/:id', (request, response, next) => {
 
 	let id = request.params.id;
 
-	db.all("SELECT * FROM playlist_song WHERE playlist_id = ?", [id], (error, value) => {
+	db.all("SELECT * FROM playlist_song WHERE playlist_id = ?", [id],  (error, value) => {
 		if (error) {
 			throw error;
 		}
 
-		return response.json(value)
+		let songsQuery = '';
+		value.forEach((item, i) => {
+			if (i != 0){
+				songsQuery += ` OR id = ${item.song_id}`
+			} else {
+				songsQuery += `id = ${item.song_id}`
+			}
+		})
+
+		db.all(`SELECT * FROM songs WHERE ${songsQuery}`, (error, value) => {
+			if (error) {
+				throw error;
+			}
+			
+			return response.json(value)
+		})
 	});
 });
 
