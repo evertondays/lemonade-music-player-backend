@@ -75,7 +75,7 @@ routes.delete('/music/:id', (request, response) => {
 // ********
 // Playlist
 // ********
-routes.get('/playlist/:id', (request, response, next) => {
+routes.get('/playlist/:id', (request, response) => {
 
 	let id = request.params.id;
 
@@ -98,9 +98,21 @@ routes.get('/playlist/:id', (request, response, next) => {
 				throw error;
 			}
 			
-			return response.json(value)
+			return response.json(value);
 		})
 	});
+});
+
+routes.get('/playlist-info/:id', (request, response) => {
+	let id = request.params.id;
+
+	db.all(`SELECT * FROM playlists WHERE id = ${id}`, (error, value) => {
+		if (error) {
+			throw error;
+		}
+		
+		return response.json(value);
+	})
 });
 
 // Criar playlist
