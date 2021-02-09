@@ -2,7 +2,7 @@ const routes = require('express').Router();
 
 // Banco de dados
 const sqlite3 = require('sqlite3');
-const db = new sqlite3.Database('./src/database/database.sqlite');
+const db = new sqlite3.Database('./database/database.sqlite');
 
 routes.get('/playlist/:id', (request, response) => {
 
