@@ -5,17 +5,20 @@ const cors = require('cors');
 
 const app = express();
 
-const port = 3333;
-
+// Config
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
+// Rota de arquivos
 app.use('/song', express.static(path.resolve(__dirname, '..', 'uploads')));
 
-app.use(require('./routes'));
-app.listen(port);
+// Rotas da API
+app.use(require('./routes/music'));
+app.use(require('./routes/playlist'));
+
+app.listen(3333);
 
 /* Mensagem de log */
 console.log(require('./message'));
