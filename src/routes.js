@@ -44,10 +44,8 @@ routes.post('/music', multer(multerConfig).single('file'), async (request, respo
 		return duration;
 	  });
 
-	let query = `INSERT INTO songs ('name', 'artist', 'album', 'duration', 'image', 'file')
-	VALUES ('${request.body.name}', '${request.body.artist}', '${request.body.album}', '${fileDuration}', '${request.body.image}','${request.file.filename}')`;
-
-	db.run(query);
+	db.run("INSERT INTO songs ('name', 'artist', 'album', 'duration', 'image', 'file') VALUES (?, ?, ?, ?, ?, ?)", 
+		[request.body.name, request.body.artist, request.body.album, fileDuration, request.body.image, request.file.filename]);
 
 	console.log(request.file)
 	return response.json({ message: 'Okay, gravado com sucesso!' })
@@ -66,8 +64,8 @@ routes.delete('/music/:id', (request, response) => {
 		);
 	});
 
-	db.run(`DELETE FROM songs WHERE id = ${id}`);
-	db.run(`DELETE FROM playlist_song WHERE song_id = ${id}`);
+	db.run("DELETE FROM songs WHERE id = ?", [id]);
+	db.run("DELETE FROM playlist_song WHERE song_id = ?", [id]);
 
 	return response.json({ message: 'Musica deletada' })
 });
@@ -113,7 +111,7 @@ routes.get('/playlist/:id', (request, response) => {
 routes.get('/playlist-info/:id', (request, response) => {
 	let id = request.params.id;
 
-	db.all(`SELECT * FROM playlists WHERE id = ${id}`, (error, value) => {
+	db.all("SELECT * FROM playlists WHERE id = ?", [id], (error, value) => {
 		if (error) {
 			throw error;
 		}
@@ -123,31 +121,25 @@ routes.get('/playlist-info/:id', (request, response) => {
 });
 
 // Criar playlist
-routes.post('/playlist/create', (request, response) => {
-	let query = `INSERT INTO playlists ('name', 'description', 'image')
-	VALUES ('${request.body.name}', '${request.body.description}', '${request.body.image}')`;
-	
-	db.run(query);
+routes.post('/playlist/create', (request, response) => {	
+	db.run("INSERT INTO playlists ('name', 'description', 'image') VALUES (?, ?, ?)",
+		[request.body.name, request.body.description, request.body.image]);
 
 	return response.json({ message: 'Okay, playlist criada com sucesso!' })
 });
 
 // Adiciona musica a uma playlist
 routes.post('/add-song-playlist/:playlist_id/:song_id', (request, response) => {
-	let query = `INSERT INTO playlist_song ('playlist_id', 'song_id')
-	VALUES ('${request.params.playlist_id}', '${request.params.song_id}')`;
-
-	db.run(query);
+	db.run("INSERT INTO playlist_song ('playlist_id', 'song_id') VALUES (?, ?)",
+		[request.params.playlist_id, request.params.song_id]);
 
 	return response.json({ message: 'Okay' })
 });
 
 // Remove musica de uma playlist
 routes.delete('/remove-song-playlist/:playlist_id/:song_id', (request, response) => {
-	let query = `DELETE FROM playlist_song
-	WHERE playlist_id = ${request.params.playlist_id} AND song_id = ${request.params.song_id}`;
-
-	db.run(query);
+	db.run("DELETE FROM playlist_song WHERE playlist_id = ? AND song_id = ?", 
+		[request.params.playlist_id, request.params.song_id]);
 
 	return response.json({ message: 'Okay' })
 });
@@ -164,7 +156,7 @@ routes.get('/all-playlists', (request, response) => {
 });
 
 routes.delete('/delete-playlist/:id', (request, response) => {
-	db.run(`DELETE FROM playlists WHERE id = ${request.params.id}`);
+	db.run(`DELETE FROM playlists WHERE id = ?`, [request.params.id]);
 
 	return response.json({ message: 'Playlist deletada' })
 });
