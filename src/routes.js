@@ -148,7 +148,8 @@ routes.delete('/remove-song-playlist/:playlist_id/:song_id', (request, response)
 routes.get('/all-playlists', (request, response) => {
 	db.all("SELECT * FROM playlists", (error, value) => {
 		if (error) {
-			throw error;
+			console.log(error);
+			return response.json({message: 'Error 500'})
 		}
 
 		return response.json(value)
