@@ -16,7 +16,8 @@
   },
   "scripts": {
     "dev": "nodemon src/server.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+	"create-database": "node src/create-database.js"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"
