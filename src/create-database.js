@@ -1,4 +1,12 @@
 const sqlite3 = require('sqlite3');
+
+var fs = require('fs');
+var dir = './database';
+
+if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+}
+
 const db = new sqlite3.Database('./database/database.sqlite');
 
 db.run(`
