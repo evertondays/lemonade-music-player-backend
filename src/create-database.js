@@ -1,11 +1,14 @@
 const sqlite3 = require('sqlite3');
-
 var fs = require('fs');
-var dir = './database';
 
-if (!fs.existsSync(dir)){
-    fs.mkdirSync(dir);
+function createDirectory(dir){
+	if (!fs.existsSync(dir)){
+		fs.mkdirSync(dir);
+	}
 }
+
+createDirectory('./database');
+createDirectory('./uploads');
 
 const db = new sqlite3.Database('./database/database.sqlite');
 
